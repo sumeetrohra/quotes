@@ -1,25 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
 
-function App() {
+import {
+  Container,
+  Quote,
+  QuoteBox,
+  QuoteAuthor,
+  Button
+} from './components';
+import { getRandomColor, getQuote } from './utils';
+
+const App = () => {
+  const [quote, setQuote] = useState(null);
+  const [author, setAuthor] = useState(null);
+  const [color, setColor] = useState(null);
+
+  const populateData = async () => {
+    const quoteData = await getQuote();
+    const randomColor = getRandomColor();
+    setQuote(quoteData.content);
+    setAuthor(quoteData.author);
+    setColor(randomColor);
+  }
+
+  useEffect(() => {
+    populateData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container color={color}>
+      <QuoteBox>
+        <Quote text={quote} />
+        <QuoteAuthor text={author} />
+        <Button
+          text='Get Random Quote'
+          color={color}
+          onClick={populateData}
+        />
+      </QuoteBox>
+    </Container>
   );
 }
 
